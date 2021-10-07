@@ -31,14 +31,20 @@ function algorhytm(home, away, soglia, nameA, nameB) {
   }
   console.log(A.goals);
   console.log(B.goals);
-  createChart(nameA, nToPercentageArray(A.goals, 60), true);
-  createChart(nameB, nToPercentageArray(B.goals, 60), false);
+  var data = {
+    A: nToPercentageArray(A.goals, n),
+    B: nToPercentageArray(B.goals, n)
+  };
+  createChart(nameA, data.A, true);
+  createChart(nameB, data.B, false);
+  _1x2_(data);
+  _UO_(data);
 }
 
 function nToPercentageArray(ar, n) {
   var s = [];
-  ar.forEach((e) => {
-    s.push((e * 100) / n);
+  ar.forEach((el) => {
+    s.push((el * 100) / n);
   });
   return s;
 }
@@ -49,7 +55,7 @@ function isToModify(p, soglia) {
 
 function modiify(S) {
   S.goals.push(1);
-  S.e -= 0.5;
+  S.e -= 0.2;
 }
 
 function createChart(squadra, percentage, isHome) {
@@ -278,14 +284,13 @@ function Calcola(A, B, t) {
     ris_a = (Number(base_squadra_casa_effettiva) * at + ac) / (at + 1);
   if (bt > 0)
     ris_b = (Number(base_squadra_ospite_effettiva) * bt + bc) / (bt + 1);
-  console.log(ris_a + " , " + ris_b);
   ris_a += getNecessity(A[0], t, t.length - 3);
   ris_a += getNecessity(A[0], t, 3);
   ris_b += getNecessity(B[0], t, t.length - 3);
   ris_b += getNecessity(B[0], t, 3);
   console.log(ris_a + " , " + ris_b);
 
-  algorhytm(ris_a, ris_b, 0.9, nome_casa, nome_ospite);
+  algorhytm(ris_a, ris_b, 0.95, nome_casa, nome_ospite);
 }
 
 function Media(a, b) {
@@ -351,4 +356,42 @@ function getTeamsSelect(teams) {
     optionB.text = teams[i][0];
     tB.add(optionB, tB[tB.length]);
   }
+}
+
+function _1x2_(data) {
+  var AXB = { A: 0, X: 0, B: 0 };
+  for (var i = 0; i < data.A.length; ++i) {
+    for (var j = 0; j < data.B.length; ++j) {
+      if (i > j) {
+        AXB.A += (data.A[i] * data.B[j]) / 100;
+      } else if (i === j) {
+        AXB.X += (data.A[i] * data.B[j]) / 100;
+      } else if (i < j) {
+        AXB.B += (data.A[i] * data.B[j]) / 100;
+      }
+    }
+  }
+  console.log("1X2:");
+  console.log(AXB);
+  return AXB;
+}
+
+function _UO_(data) {
+  var UO = { U: [], O: [] };
+  for (var t = 0; t < 6; ++t) {
+    UO.U.push(0);
+    UO.O.push(0);
+    for (var i = 0; i < data.A.length; ++i) {
+      for (var j = 0; j < data.B.length; ++j) {
+        if (i + j < t + 0.5) {
+          UO.U[t] += (data.A[i] * data.B[j]) / 100;
+        } else if (i + j > t + 0.5) {
+          UO.O[t] += (data.A[i] * data.B[j]) / 100;
+        }
+      }
+    }
+  }
+  console.log("UO: ");
+  console.log(UO);
+  return UO;
 }
