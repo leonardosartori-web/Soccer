@@ -2,13 +2,16 @@ import "./styles.css";
 import Chart from "chart.js/auto";
 import axios from "axios";
 
-var result;
+var results;
 
 getRequest();
+document.querySelector("#calcBtn").addEventListener("click", function () {
+  getTeams();
+});
 
 function algorhytm(home, away, soglia, nameA, nameB) {
   console.log(home, away);
-  var n = 100;
+  var n = 60;
   var A = { goals: [0], e: 0 };
   var B = { goals: [0], e: 0 };
   for (var i = 0; i < n; ++i) {
@@ -17,7 +20,7 @@ function algorhytm(home, away, soglia, nameA, nameB) {
     //var cost = 1;
     var pA = (cost * home * (i + 1)) / n + A.e;
     var pB = (cost * away * (i + 1)) / n + B.e;
-    console.log(pA, pB);
+    //console.log(pA, pB);
     if (isToModify(pA - A.goals.length + 1, soglia)) {
       modiify(A);
     } else A.goals[A.goals.length - 1]++;
@@ -28,8 +31,16 @@ function algorhytm(home, away, soglia, nameA, nameB) {
   }
   console.log(A.goals);
   console.log(B.goals);
-  createChart(nameA, A.goals, true);
-  createChart(nameB, B.goals, false);
+  createChart(nameA, nToPercentageArray(A.goals, 60), true);
+  createChart(nameB, nToPercentageArray(B.goals, 60), false);
+}
+
+function nToPercentageArray(ar, n) {
+  var s = [];
+  ar.forEach((e) => {
+    s.push((e * 100) / n);
+  });
+  return s;
 }
 
 function isToModify(p, soglia) {
@@ -38,7 +49,7 @@ function isToModify(p, soglia) {
 
 function modiify(S) {
   S.goals.push(1);
-  S.e -= 0.1;
+  S.e -= 0.5;
 }
 
 function createChart(squadra, percentage, isHome) {
@@ -98,6 +109,7 @@ function getRequest() {
       //console.log(response);
       var result = response.data.sheets[0].data[0].rowData;
       getData(result);
+      console.log("Done!");
     })
     .catch(function (error) {
       console.log(error);
@@ -105,7 +117,7 @@ function getRequest() {
 }
 
 function getData(data) {
-  console.log(data);
+  //console.log(data);
   var ar = [];
   for (const x of data) {
     var array = [];
@@ -114,8 +126,9 @@ function getData(data) {
     }
     ar.push(array);
   }
-  console.log(ar);
-  getTeams(ar);
+  //console.log(ar);
+  results = ar;
+  getTeamsSelect(results);
 }
 
 function searchTeam(ar, t) {
@@ -128,12 +141,14 @@ function searchTeam(ar, t) {
   console.log("NOT Find!");
 }
 
-function getTeams(result) {
-  var ai = searchTeam(result, "Juventus");
-  var bi = searchTeam(result, "Milan");
+function getTeams() {
+  var homeTeam = document.getElementById("homeTeam").value;
+  var awayTeam = document.getElementById("awayTeam").value;
+  var ai = searchTeam(results, homeTeam);
+  var bi = searchTeam(results, awayTeam);
   console.log(ai, bi);
 
-  Calcola(result[ai], result[bi], result);
+  Calcola(results[ai], results[bi], results);
 }
 
 function Calcola(A, B, t) {
@@ -268,7 +283,6 @@ function Calcola(A, B, t) {
   ris_a += getNecessity(A[0], t, 3);
   ris_b += getNecessity(B[0], t, t.length - 3);
   ris_b += getNecessity(B[0], t, 3);
-  console.log(isNaN(ris_b));
   console.log(ris_a + " , " + ris_b);
 
   algorhytm(ris_a, ris_b, 0.9, nome_casa, nome_ospite);
@@ -324,4 +338,17 @@ function getNecessity(S, t, r) {
       return 0.4;
     } else return 0.25;
   } else return 0.0;
+}
+
+function getTeamsSelect(teams) {
+  for (var i = 0; i < teams.length; ++i) {
+    var tA = document.getElementById("homeTeam");
+    var optionA = document.createElement("option");
+    optionA.text = teams[i][0];
+    tA.add(optionA, tA[tA.length]);
+    var tB = document.getElementById("awayTeam");
+    var optionB = document.createElement("option");
+    optionB.text = teams[i][0];
+    tB.add(optionB, tB[tB.length]);
+  }
 }

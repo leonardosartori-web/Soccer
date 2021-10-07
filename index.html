@@ -5,7 +5,19 @@
     <meta charset="UTF-8" />
   </head>
   <body>
-    <div id="app"></div>
+    <div id="app">
+      <label for="homeTeam">Home</label>
+      <select name="homeTeam" id="homeTeam"></select>
+      <label for="awayTeam">Away</label>
+      <select name="awayTeam" id="awayTeam"></select>
+      <button type="button" id="calcBtn">Calculate</button>
+    </div>
     <script src="src/index.js"></script>
   </body>
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.5.1/chart.min.js"
+    integrity="sha512-Wt1bJGtlnMtGP0dqNFH1xlkLBNpEodaiQ8ZN5JLA5wpc1sUlk/O5uuOMNgvzddzkpvZ9GLyYNa8w2s7rqiTk5Q=="
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  ></script>
 </html>
