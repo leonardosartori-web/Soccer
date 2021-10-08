@@ -39,6 +39,7 @@ function algorhytm(home, away, soglia, nameA, nameB) {
   createChart(nameB, data.B, false);
   _1x2_(data);
   _UO_(data);
+  _MULTIGOL_TOT_(data);
 }
 
 function nToPercentageArray(ar, n) {
@@ -394,4 +395,26 @@ function _UO_(data) {
   console.log("UO: ");
   console.log(UO);
   return UO;
+}
+
+function _MULTIGOL_TOT_(data) {
+  var M = [];
+  for (var t = 1; t < 6; ++t) {
+    var multigol = [];
+    for (var z = t + 1; z < 6; ++z) {
+      var p = 0;
+      for (var i = 0; i < data.A.length; ++i) {
+        for (var j = 0; j < data.B.length; ++j) {
+          if (i + j >= t && i + j <= z) {
+            p += (data.A[i] * data.B[j]) / 100;
+          }
+        }
+      }
+      multigol.push(p);
+    }
+    M.push(multigol);
+  }
+  console.log("MULTIGOL: ");
+  console.log(M);
+  return M;
 }
