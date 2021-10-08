@@ -15,11 +15,11 @@ function algorhytm(home, away, soglia, nameA, nameB) {
   var A = { goals: [0], e: 0 };
   var B = { goals: [0], e: 0 };
   for (var i = 0; i < n; ++i) {
-    var cost = (1 + Math.sqrt(5)) / 2;
-    //var cost = Math.E;
+    //var cost = (1 + Math.sqrt(5)) / 2;
+    var cost = Math.E;
     //var cost = 1;
-    var pA = (cost * home * (i + 1)) / n + A.e;
-    var pB = (cost * away * (i + 1)) / n + B.e;
+    var pA = (home * (i + 1)) / n + A.e + cost / n;
+    var pB = (away * (i + 1)) / n + B.e + cost / n;
     //console.log(pA, pB);
     if (isToModify(pA - A.goals.length + 1, soglia)) {
       modiify(A);
@@ -35,6 +35,8 @@ function algorhytm(home, away, soglia, nameA, nameB) {
     A: nToPercentageArray(A.goals, n),
     B: nToPercentageArray(B.goals, n)
   };
+  var div = document.querySelector("#graphs");
+  div.innerHTML = "";
   createChart(nameA, data.A, true);
   createChart(nameB, data.B, false);
   _1x2_(data);
@@ -56,14 +58,15 @@ function isToModify(p, soglia) {
 
 function modiify(S) {
   S.goals.push(1);
-  S.e -= 0.2;
+  S.e -= 0.1;
 }
 
 function createChart(squadra, percentage, isHome) {
+  var div = document.querySelector("#graphs");
   var ctx = document.createElement("canvas");
   if (isHome) ctx.id = "HomeChart";
   else ctx.id = "AwayChart";
-  document.body.appendChild(ctx);
+  div.appendChild(ctx);
   let myCanvas = document.getElementById(ctx.id).getContext("2d");
   var arr = [];
   for (var i = 0; i < percentage.length; i++) {
