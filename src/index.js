@@ -39,9 +39,11 @@ function algorhytm(home, away, soglia, nameA, nameB) {
   div.innerHTML = "";
   createChart(nameA, data.A, true);
   createChart(nameB, data.B, false);
-  _1x2_(data);
-  _UO_(data);
-  _MULTIGOL_TOT_(data);
+  var table = _table_(data);
+  var _1X2_ = _1x2_f(table);
+  generateTable(_1X2_);
+  _UO_f(table);
+  _MULTIGOL_TOT_f(table);
 }
 
 function nToPercentageArray(ar, n) {
@@ -362,16 +364,36 @@ function getTeamsSelect(teams) {
   }
 }
 
-function _1x2_(data) {
-  var AXB = { A: 0, X: 0, B: 0 };
-  for (var i = 0; i < data.A.length; ++i) {
-    for (var j = 0; j < data.B.length; ++j) {
+function _table_(data) {
+  var homeAway = [];
+  for (let i = 0; i < data.A.length; i++) {
+    var home = [];
+    for (let j = 0; j < data.B.length; j++) {
+      home.push((data.A[i] * data.B[j]) / 100);
+    }
+    homeAway.push(home);
+  }
+  console.log("Table:");
+  console.log(homeAway);
+  return homeAway;
+}
+
+function _1x2_f(data) {
+  var AXB = {
+    A: 0,
+    X: 0,
+    B: 0
+  };
+  for (const x of data) {
+    var i = data.indexOf(x);
+    for (const y of x) {
+      var j = x.indexOf(y);
       if (i > j) {
-        AXB.A += (data.A[i] * data.B[j]) / 100;
+        AXB.A += y;
       } else if (i === j) {
-        AXB.X += (data.A[i] * data.B[j]) / 100;
+        AXB.X += y;
       } else if (i < j) {
-        AXB.B += (data.A[i] * data.B[j]) / 100;
+        AXB.B += y;
       }
     }
   }
@@ -380,17 +402,19 @@ function _1x2_(data) {
   return AXB;
 }
 
-function _UO_(data) {
+function _UO_f(data) {
   var UO = { U: [], O: [] };
   for (var t = 0; t < 6; ++t) {
     UO.U.push(0);
     UO.O.push(0);
-    for (var i = 0; i < data.A.length; ++i) {
-      for (var j = 0; j < data.B.length; ++j) {
+    for (const x of data) {
+      var i = data.indexOf(x);
+      for (const y of x) {
+        var j = x.indexOf(y);
         if (i + j < t + 0.5) {
-          UO.U[t] += (data.A[i] * data.B[j]) / 100;
+          UO.U[t] += y;
         } else if (i + j > t + 0.5) {
-          UO.O[t] += (data.A[i] * data.B[j]) / 100;
+          UO.O[t] += y;
         }
       }
     }
@@ -400,16 +424,18 @@ function _UO_(data) {
   return UO;
 }
 
-function _MULTIGOL_TOT_(data) {
+function _MULTIGOL_TOT_f(data) {
   var M = [];
   for (var t = 1; t < 6; ++t) {
     var multigol = [];
     for (var z = t + 1; z < 6; ++z) {
       var p = 0;
-      for (var i = 0; i < data.A.length; ++i) {
-        for (var j = 0; j < data.B.length; ++j) {
+      for (const x of data) {
+        var i = data.indexOf(x);
+        for (const y of x) {
+          var j = x.indexOf(y);
           if (i + j >= t && i + j <= z) {
-            p += (data.A[i] * data.B[j]) / 100;
+            p += y;
           }
         }
       }
@@ -420,4 +446,25 @@ function _MULTIGOL_TOT_(data) {
   console.log("MULTIGOL: ");
   console.log(M);
   return M;
+}
+
+function generateTable(data) {
+  var table = document.createElement("table");
+  for (const x of data) {
+    var row = document.createElement("tr");
+    var i = data.indexOf(x);
+    for (const y of x) {
+      var j = x.indexOf(y);
+      var cell = document.createElement("td");
+      if (i === 0) {
+        cell.style.fontWeight = "bold";
+      }
+      cell.innerText = y;
+      row.append(cell);
+    }
+    table.appendChild(row);
+  }
+  var div = document.querySelector("#table");
+  div.appendChild(table);
+  console.log("Tabella");
 }
