@@ -41,17 +41,25 @@ function algorhytm(home, away, soglia, nameA, nameB) {
   createChart(nameB, data.B, false);
   var table = _table_(data);
   var _1X2_ = _1x2_f(table);
-  generateTable(_1X2_);
-  _UO_f(table);
+  var _UO_ = _UO_f(table);
+  var stats = document.querySelector("#table");
+  stats.append(objToTable(_1X2_, ["1", "X", "2"]));
+  stats.append(objToTable(_UO_, ["U", "O"]));
   _MULTIGOL_TOT_f(table);
 }
 
 function nToPercentageArray(ar, n) {
   var s = [];
   ar.forEach((el) => {
-    s.push((el * 100) / n);
+    var p = (el * 100) / n;
+    p = truncer(p);
+    s.push(p);
   });
   return s;
+}
+
+function truncer(n) {
+  return Math.trunc(100 * n) / 100;
 }
 
 function isToModify(p, soglia) {
@@ -389,11 +397,11 @@ function _1x2_f(data) {
     for (const y of x) {
       var j = x.indexOf(y);
       if (i > j) {
-        AXB.A += y;
+        AXB.A += truncer(y);
       } else if (i === j) {
-        AXB.X += y;
+        AXB.X += truncer(y);
       } else if (i < j) {
-        AXB.B += y;
+        AXB.B += truncer(y);
       }
     }
   }
@@ -412,9 +420,9 @@ function _UO_f(data) {
       for (const y of x) {
         var j = x.indexOf(y);
         if (i + j < t + 0.5) {
-          UO.U[t] += y;
+          UO.U[t] += truncer(y);
         } else if (i + j > t + 0.5) {
-          UO.O[t] += y;
+          UO.O[t] += truncer(y);
         }
       }
     }
@@ -435,7 +443,7 @@ function _MULTIGOL_TOT_f(data) {
         for (const y of x) {
           var j = x.indexOf(y);
           if (i + j >= t && i + j <= z) {
-            p += y;
+            p += truncer(y);
           }
         }
       }
@@ -467,4 +475,39 @@ function generateTable(data) {
   var div = document.querySelector("#table");
   div.appendChild(table);
   console.log("Tabella");
+}
+
+function objToTable(data, headers) {
+  var table = document.createElement("table");
+  //Make headers
+  var row = document.createElement("tr");
+  for (const x of headers) {
+    var cell = document.createElement("td");
+    cell.style.fontWeight = "bold";
+    cell.innerText = x;
+    row.append(cell);
+  }
+  table.appendChild(row);
+  //Make rest of table
+  var obj = Object.values(data);
+  if (Array.isArray(obj[0])) {
+    for (let i = 0; i < obj[0].length; i++) {
+      var row = document.createElement("tr");
+      for (let j = 0; j < 2; j++) {
+        var cell = document.createElement("td");
+        cell.innerText = truncer(obj[j][i]);
+        row.append(cell);
+      }
+      table.appendChild(row);
+    }
+  } else {
+    var row = document.createElement("tr");
+    for (const x of obj) {
+      var cell = document.createElement("td");
+      cell.innerText = truncer(x);
+      row.append(cell);
+    }
+    table.appendChild(row);
+  }
+  return table;
 }
