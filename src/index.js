@@ -15,11 +15,11 @@ function algorhytm(home, away, soglia, nameA, nameB) {
   var A = { goals: [0], e: 0 };
   var B = { goals: [0], e: 0 };
   for (var i = 0; i < n; ++i) {
-    //var cost = (1 + Math.sqrt(5)) / 2;
-    var cost = Math.E;
+    var cost = (1 + Math.sqrt(5)) / 2;
+    //var cost = Math.E;
     //var cost = 1;
-    var pA = (home * (i + 1)) / n + A.e + cost / n;
-    var pB = (away * (i + 1)) / n + B.e + cost / n;
+    var pA = (cost * (home * (i + 1))) / n + A.e;
+    var pB = (cost * (away * (i + 1))) / n + B.e;
     //console.log(pA, pB);
     if (isToModify(pA - A.goals.length + 1, soglia)) {
       modiify(A);
