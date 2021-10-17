@@ -21,11 +21,11 @@ function algorhytm(home, away, soglia, nameA, nameB) {
     var pA = (cost * (home * (i + 1))) / n + A.e;
     var pB = (cost * (away * (i + 1))) / n + B.e;
     //console.log(pA, pB);
-    if (isToModify(pA - A.goals.length + 1, soglia)) {
+    if (isToModify(pA - A.goals.length + 1, soglia, A.goals.length)) {
       modiify(A);
     } else A.goals[A.goals.length - 1]++;
 
-    if (isToModify(pB - B.goals.length + 1, soglia)) {
+    if (isToModify(pB - B.goals.length + 1, soglia, B.goals.length)) {
       modiify(B);
     } else B.goals[B.goals.length - 1]++;
   }
@@ -64,13 +64,13 @@ function truncer(n) {
   return Math.trunc(100 * n) / 100;
 }
 
-function isToModify(p, soglia) {
-  return p > soglia;
+function isToModify(p, soglia, goal) {
+  return p > soglia + goal / 10;
 }
 
 function modiify(S) {
   S.goals.push(1);
-  S.e -= 0.1;
+  S.e -= 0.2;
 }
 
 function createChart(squadra, percentage, isHome) {
