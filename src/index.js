@@ -37,6 +37,8 @@ function algorhytm(home, away, soglia, nameA, nameB) {
   };
   var div = document.querySelector("#graphs");
   div.innerHTML = "";
+  var divTable = document.querySelector("#table");
+  divTable.innerHTML = "";
   createChart(nameA, data.A, true);
   createChart(nameB, data.B, false);
   var table = _table_(data);
