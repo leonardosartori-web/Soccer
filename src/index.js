@@ -12,10 +12,11 @@ document.querySelector("#calcBtn").addEventListener("click", function () {
 function algorhytm(home, away, soglia, nameA, nameB) {
   console.log(home, away);
   var min = Math.min(home, away);
+  var max = Math.max(home, away);
   var sogliaA = soglia;
   var sogliaB = soglia;
-  if (min === home) sogliaA = soglia - 0.2;
-  else sogliaB = soglia - 0.2;
+  if (min === home) sogliaA = soglia - min / (10 * max);
+  else sogliaB = soglia - min / (10 * max);
   console.log(sogliaA, sogliaB);
   var n = 60;
   var A = { goals: [0], e: 0 };
@@ -306,17 +307,20 @@ function Calcola(A, B, t) {
     ris_a = (Number(base_squadra_casa_effettiva) * at + ac) / (at + 1);
   if (bt > 0)
     ris_b = (Number(base_squadra_ospite_effettiva) * bt + bc) / (bt + 1);
+  console.log(ris_a + " , " + ris_b);
+
   ris_a += getNecessity(A[0], t, t.length - 3);
-  ris_a += getNecessity(A[0], t, 3);
   ris_b += getNecessity(B[0], t, t.length - 3);
+  console.log(ris_a + " , " + ris_b);
+  ris_a += getNecessity(A[0], t, 3);
   ris_b += getNecessity(B[0], t, 3);
 
   //casa avvantaggiati
-  ris_a += 0.2;
+  ris_a *= 1.05;
   //ospiti svantaggiati
-  ris_b *= 0.7;
+  ris_b *= 0.9;
   console.log(ris_a + " , " + ris_b);
-  var min = 80;
+  var min = 75;
   var max = 95;
   var soglia = (Math.random() * (max - min) + min) / 100;
 
@@ -360,15 +364,17 @@ function controllo_add(base, quoziente, costante) {
 
 function getNecessity(S, t, r) {
   var n = searchTeam(t, S);
-  var n_matches_risk = t[r][6] + t[r][7];
-  var remaining_risk = 2 * (t.length - 1) - n_matches_risk;
+  var n_matches_risk = Number(t[r][6]) + Number(t[r][7]);
+  var remaining_risk = 2 * (t.length - 2) - n_matches_risk;
   var max_point_risk = remaining_risk * 3;
-  var save = t[n][8] > t[r][8] + max_point_risk;
+  var save = Number(t[n][8]) > Number(t[r][8]) + max_point_risk;
+  console.log(n, n_matches_risk, remaining_risk, max_point_risk);
+  console.log(save);
 
   if (!save) {
-    var n_matches = t[n][6] + t[n][7];
+    var n_matches = Number(t[n][6]) + Number(t[n][7]);
     var remaining_matches = 2 * (t.length - 1) - n_matches;
-    var possibility = t[n][8] + 3 * remaining_matches > t[r][8];
+    var possibility = Number(t[n][8]) + 3 * remaining_matches > Number(t[r][8]);
     if (possibility) {
       return 0.4;
     } else return 0.25;
