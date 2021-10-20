@@ -11,7 +11,12 @@ document.querySelector("#calcBtn").addEventListener("click", function () {
 
 function algorhytm(home, away, soglia, nameA, nameB) {
   console.log(home, away);
-  var arPA = [];
+  var min = Math.min(home, away);
+  var sogliaA = soglia;
+  var sogliaB = soglia;
+  if (min === home) sogliaA = soglia - 0.2;
+  else sogliaB = soglia - 0.2;
+  console.log(sogliaA, sogliaB);
   var n = 60;
   var A = { goals: [0], e: 0 };
   var B = { goals: [0], e: 0 };
@@ -20,14 +25,13 @@ function algorhytm(home, away, soglia, nameA, nameB) {
     //var cost = Math.E;
     //var cost = 1;
     var pA = (cost * (home * (i + 1))) / n + A.e;
-    arPA.push(pA);
     var pB = (cost * (away * (i + 1))) / n + B.e;
     //console.log(pA, pB);
-    if (isToModify(pA - A.goals.length + 1, soglia, A.goals.length)) {
+    if (isToModify(pA - A.goals.length + 1, sogliaA, A.goals.length)) {
       modiify(A);
     } else A.goals[A.goals.length - 1]++;
 
-    if (isToModify(pB - B.goals.length + 1, soglia, B.goals.length)) {
+    if (isToModify(pB - B.goals.length + 1, sogliaB, B.goals.length)) {
       modiify(B);
     } else B.goals[B.goals.length - 1]++;
   }
@@ -50,7 +54,6 @@ function algorhytm(home, away, soglia, nameA, nameB) {
   stats.append(objToTable(_1X2_, ["1", "X", "2"]));
   stats.append(objToTable(_UO_, ["U", "O"]));
   _MULTIGOL_TOT_f(table);
-  console.log(arPA);
 }
 
 function nToPercentageArray(ar, n) {
@@ -308,11 +311,16 @@ function Calcola(A, B, t) {
   ris_b += getNecessity(B[0], t, t.length - 3);
   ris_b += getNecessity(B[0], t, 3);
 
+  //casa avvantaggiati
+  ris_a += 0.2;
   //ospiti svantaggiati
   ris_b *= 0.7;
   console.log(ris_a + " , " + ris_b);
+  var min = 80;
+  var max = 95;
+  var soglia = (Math.random() * (max - min) + min) / 100;
 
-  algorhytm(ris_a, ris_b, 0.95, nome_casa, nome_ospite);
+  algorhytm(ris_a, ris_b, soglia, nome_casa, nome_ospite);
 }
 
 function Media(a, b) {
