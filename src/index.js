@@ -11,6 +11,7 @@ document.querySelector("#calcBtn").addEventListener("click", function () {
 
 function algorhytm(home, away, soglia, nameA, nameB) {
   console.log(home, away);
+  var arPA = [];
   var n = 60;
   var A = { goals: [0], e: 0 };
   var B = { goals: [0], e: 0 };
@@ -19,6 +20,7 @@ function algorhytm(home, away, soglia, nameA, nameB) {
     //var cost = Math.E;
     //var cost = 1;
     var pA = (cost * (home * (i + 1))) / n + A.e;
+    arPA.push(pA);
     var pB = (cost * (away * (i + 1))) / n + B.e;
     //console.log(pA, pB);
     if (isToModify(pA - A.goals.length + 1, soglia, A.goals.length)) {
@@ -48,6 +50,7 @@ function algorhytm(home, away, soglia, nameA, nameB) {
   stats.append(objToTable(_1X2_, ["1", "X", "2"]));
   stats.append(objToTable(_UO_, ["U", "O"]));
   _MULTIGOL_TOT_f(table);
+  console.log(arPA);
 }
 
 function nToPercentageArray(ar, n) {
@@ -304,6 +307,9 @@ function Calcola(A, B, t) {
   ris_a += getNecessity(A[0], t, 3);
   ris_b += getNecessity(B[0], t, t.length - 3);
   ris_b += getNecessity(B[0], t, 3);
+
+  //ospiti svantaggiati
+  ris_b *= 0.7;
   console.log(ris_a + " , " + ris_b);
 
   algorhytm(ris_a, ris_b, 0.95, nome_casa, nome_ospite);
